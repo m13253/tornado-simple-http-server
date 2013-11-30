@@ -17,10 +17,10 @@ class IndexHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(403)
         if not os.path.isdir(path):
             raise tornado.web.HTTPError(404)
-        self.write('<html>\n<head><title>Index of ')
-        escaped_title = tornado.web.escape.xhtml_escape(self.request.path)
+        self.write('<html>\n<head><title>Index of /')
+        escaped_title = tornado.web.escape.xhtml_escape(path if path != '.' else '')
         self.write(escaped_title)
-        self.write('</title></head>\n<body>\n<h1>Index of ')
+        self.write('</title></head>\n<body>\n<h1>Index of /')
         self.write(escaped_title)
         self.write('</h1>\n<hr />\n<table>\n')
         for f in (['..'] if path != '.' else [])+sorted([i for i in os.listdir(path) if not i.startswith('.')]):
