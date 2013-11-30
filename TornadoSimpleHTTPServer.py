@@ -32,7 +32,7 @@ class IndexHandler(tornado.web.RequestHandler):
             if os.path.isdir(absf):
                 f += '/'
             self.write('<tr><td><a href="')
-            self.write(tornado.web.escape.url_escape(f))
+            self.write(tornado.web.escape.url_escape(f).replace('+', '%20'))
             self.write('">')
             self.write(tornado.web.escape.xhtml_escape(f))
             self.write('</a></td><td>')
