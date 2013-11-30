@@ -10,14 +10,10 @@ import tornado.log
 import tornado.web
 
 
-curdir = './'
-
-
 class IndexHandler(tornado.web.RequestHandler):
     def get(self, path):
-        if not path:
-            path = '.'
-        if not os.path.join(os.path.abspath(path), '').startswith(curdir):
+        path = os.path.normpath(path)
+        if os.path.join(path, '').startswith(os.path.join('..', '')) or os.path.isabs(path):
             raise tornado.web.HTTPError(403)
         if not os.path.isdir(path):
             raise tornado.web.HTTPError(404)
@@ -27,12 +23,13 @@ class IndexHandler(tornado.web.RequestHandler):
         self.write('</title></head>\n<body>\n<h1>Index of ')
         self.write(escaped_title)
         self.write('</h1>\n<hr />\n<table>\n')
-        for f in sorted([i for i in os.listdir(path) if not i.startswith('.')]):
+        for f in (['..'] if path != '.' else [])+sorted([i for i in os.listdir(path) if not i.startswith('.')]):
+            self.write('<tr><td><a href="')
             absf = os.path.join(path, f)
+            self.write(tornado.web.escape.url_escape(f).replace('+', '%20'))
             if os.path.isdir(absf):
                 f += '/'
-            self.write('<tr><td><a href="')
-            self.write(tornado.web.escape.url_escape(f).replace('+', '%20'))
+                self.write('/')
             self.write('">')
             self.write(tornado.web.escape.xhtml_escape(f))
             self.write('</a></td><td>')
@@ -45,8 +42,6 @@ class IndexHandler(tornado.web.RequestHandler):
 
 
 def main():
-    global curdir
-    curdir = os.path.join(os.path.abspath(os.getcwd()), '')
     listen_address = ''
     listen_port = 8000
     try:
