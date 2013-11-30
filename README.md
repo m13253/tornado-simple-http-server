@@ -15,4 +15,9 @@ Notes
 
 Unlike `python -m http.server`, TornadoSimpleHTTPServer can serve multiple connections concurrently thanks to [Tornado web framework](http://www.tornadoweb.org).
 
+Warning
+-------
+
+Tornado is not designed to serve too large files. You may want to switch to other professional HTTP server software.
+
 This software, released under [GNU General Public License version 3](COPYING), is provided **as is**, and comes with **absolutely no warranty**. This software may contain bugs which may cause damage including data loss or leakage of confidential data. Please use this software at your own risk.
