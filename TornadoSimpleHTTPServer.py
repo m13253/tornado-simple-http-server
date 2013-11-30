@@ -9,10 +9,15 @@ import tornado.log
 import tornado.web
 
 
+curdir = './'
+
+
 class IndexHandler(tornado.web.RequestHandler):
     def get(self, path):
         if not path:
             path = '.'
+        if not os.path.join(os.path.abspath(path), '').startswith(curdir):
+            raise tornado.web.HTTPError(403)
         if not os.path.isdir(path):
             raise tornado.web.HTTPError(404)
         self.write('<html>\n<head><title>Index of ')
@@ -39,6 +44,8 @@ class IndexHandler(tornado.web.RequestHandler):
 
 
 def main():
+    global curdir
+    curdir = os.path.join(os.path.abspath(os.getcwd()), '')
     listen_address = ''
     listen_port = 8000
     try:
