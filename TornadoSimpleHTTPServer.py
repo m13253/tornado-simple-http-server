@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import os
 import sys
 import time
@@ -50,11 +51,12 @@ def main():
     listen_port = 8000
     try:
         if len(sys.argv) == 2:
-            listen_port = int(sys.argv[2])
+            listen_port = int(sys.argv[1])
         elif len(sys.argv) == 3:
             listen_address = sys.argv[1]
             listen_port = int(sys.argv[2])
-    except ValueError as e:
+        assert 0 <= listen_port <= 65535
+    except (AssertionError, ValueError) as e:
         raise ValueError('port must be a number between 0 and 65535')
     tornado.log.enable_pretty_logging()
     application = tornado.web.Application(
@@ -67,6 +69,7 @@ def main():
     )
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(listen_port, listen_address)
+    logging.info('Listening on %s:%s' % (listen_address or '[::]' if ':' not in listen_address else '[%s]' % listen_address, listen_port))
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == '__main__':
