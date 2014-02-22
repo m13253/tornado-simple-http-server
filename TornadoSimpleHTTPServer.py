@@ -60,7 +60,7 @@ def main():
             ('/()', IndexHandler),
             ('/(.*)', tornado.web.StaticFileHandler, {'path': '.', 'default_filename': ''}),
         ],
-        gzip=True,
+        gzip=False,
     )
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(listen_port, listen_address)
