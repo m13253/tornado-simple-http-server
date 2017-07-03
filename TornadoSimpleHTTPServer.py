@@ -11,6 +11,7 @@ import tornado.web
 
 
 class IndexHandler(tornado.web.RequestHandler):
+
     def get(self, path):
         path = os.path.normpath(path)
         if os.path.join(path, '').startswith(os.path.join('..', '')) or os.path.isabs(path):
@@ -23,7 +24,7 @@ class IndexHandler(tornado.web.RequestHandler):
         self.write('</title></head>\n<body>\n<h1>Index of /')
         self.write(escaped_title)
         self.write('</h1>\n<hr />\n<table>\n')
-        for f in (['..'] if path != '.' else [])+sorted([i for i in os.listdir(path) if not i.startswith('.')]):
+        for f in (['..'] if path != '.' else []) + sorted([i for i in os.listdir(path) if not i.startswith('.')]):
             self.write('<tr><td><a href="')
             absf = os.path.join(path, f)
             self.write(tornado.web.escape.url_escape(f).replace('+', '%20'))
